@@ -10,16 +10,7 @@ function Get-Service([string]$serviceName = $(throw "serviceName is required!"),
     return $service
 }
 
-function Test-ServiceResult([string]$operation = $(throw "Operation is required!"), [object]$result = $(throw "Result is required!"), [switch]$continueOnError = $false)
-{
-    $retVal = -1
-    if ($result.GetType().Name -eq "UInt32") { $retVal = $result } else {$retVal = $result.ReturnValue}         
-    if ($retVal -eq 0) {return}     
-    $errorcode = 'Success,Not Supported,Access Denied,Dependent Services Running,Invalid Service Control,Service Cannot Accept Control,Service Not Active,Service Request Timeout,Unknown Failure,Path Not Found,Service Already Running,Service Database Locked,Service Dependency Deleted,Service Dependency Failure,Service Disabled,Service Logon Failure,Service Marked for Deletion,Service No Thread,Status Circular Dependency,Status Duplicate Name,Status Invalid Name,Status Invalid Parameter,Status Invalid Service Account,Status Service Exists,Service Already Paused'
-    $desc = $errorcode.Split(',')[$retVal]     
-    $msg = ("Operation {0} failed with code {1}:{2}" -f $operation, $retVal, $desc)     
-    if (!$continueOnError) { Write-Error $msg } else { Write-Warning $msg }        
-}
+
 
 function Install-Service([string]$serviceName = $(throw "serviceName is required!"), [string]$targetServer = $(throw "targetServer is required!"),[string]$displayName = $(throw "displayName is required!"),[string]$physicalPath = $(throw "physicalPath is required!"),[string]$userName = $(throw "userName is required!"),[string]$password = "",[string]$startMode = "Automatic",[string]$description = "",[bool]$interactWithDesktop = $false)
 {
@@ -94,4 +85,19 @@ function Uninstall-Service([string]$serviceName = $(throw "serviceName is requir
     $result = $service.Delete()
     Test-ServiceResult -operation "Delete service $serviceName on $targetServer" -result $result   
 }
+
+
+
+
+function Test-ServiceResult([string]$operation = $(throw "Operation is required!"), [object]$result = $(throw "Result is required!"), [switch]$continueOnError = $false)
+{
+    $retVal = -1
+    if ($result.GetType().Name -eq "UInt32") { $retVal = $result } else {$retVal = $result.ReturnValue}         
+    if ($retVal -eq 0) {return}     
+    $errorcode = 'Success,Not Supported,Access Denied,Dependent Services Running,Invalid Service Control,Service Cannot Accept Control,Service Not Active,Service Request Timeout,Unknown Failure,Path Not Found,Service Already Running,Service Database Locked,Service Dependency Deleted,Service Dependency Failure,Service Disabled,Service Logon Failure,Service Marked for Deletion,Service No Thread,Status Circular Dependency,Status Duplicate Name,Status Invalid Name,Status Invalid Parameter,Status Invalid Service Account,Status Service Exists,Service Already Paused'
+    $desc = $errorcode.Split(',')[$retVal]     
+    $msg = ("Operation {0} failed with code {1}:{2}" -f $operation, $retVal, $desc)     
+    if (!$continueOnError) { Write-Error $msg } else { Write-Warning $msg }        
+}
+
 
