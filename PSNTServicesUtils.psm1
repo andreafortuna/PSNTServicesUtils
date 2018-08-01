@@ -11,16 +11,9 @@ function Get-Service([string]$serviceName = $(throw "serviceName is required!"),
 }
 
 
-
 function Install-Service([string]$serviceName = $(throw "serviceName is required!"), [string]$targetServer = $(throw "targetServer is required!"),[string]$displayName = $(throw "displayName is required!"),[string]$physicalPath = $(throw "physicalPath is required!"),[string]$userName = $(throw "userName is required!"),[string]$password = "",[string]$startMode = "Automatic",[string]$description = "",[bool]$interactWithDesktop = $false)
 {
-    $serviceType = 16         
-    $serviceErrorControl = 1   
-    $loadOrderGroup = $null
-    $loadOrderGroupDepend = $null
-    $dependencies = $null
-
-    $params = $serviceName, $displayName, $physicalPath, $serviceType, $serviceErrorControl, $startMode, $interactWithDesktop, $userName, $password, $loadOrderGroup, $loadOrderGroupDepend, $dependencies           
+    $params = $serviceName, $displayName, $physicalPath, 16, 1, $startMode, $interactWithDesktop, $userName, $password, $null, $null, $null           
     
 	$scope = new-object System.Management.ManagementScope("\\$targetServer\root\cimv2", (new-object System.Management.ConnectionOptions))
     "Connecting to $targetServer"
